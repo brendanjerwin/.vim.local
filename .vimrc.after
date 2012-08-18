@@ -1,0 +1,60 @@
+" base editor configs
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+set cursorline
+set colorcolumn=80,120
+
+set sessionoptions-=tabpages
+set sessionoptions-=help
+
+let g:session_autoload = 0
+
+let g:Powerline_symbols = 'fancy'
+let g:Powerline_stl_path_style = 'filename'
+
+au BufNewFile,BufRead *.less set filetype=less
+
+
+" Mapping <c-l> to clear highlighting and redraw
+nnoremap <C-L> :nohls<CR><C-L>
+inoremap <C-L> <C-O>:nohls<CR>
+
+nnoremap <silent> ~ :<C-u>call ToggleCase()<CR>
+
+"<esc> to clear search markers
+nnoremap <esc> :noh<return><esc>
+
+"Magic Table Alignment
+inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+
+function! s:align()
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+endfunction
+
+
+" gcode file
+au! BufRead,BufNewFile *.ngc        setfiletype ngc
+au! BufRead,BufNewFile *.gcode      setfiletype ngc
+
+" OpenSCAD file
+au! BufRead,BufNewFile *.scad    set filetype=openscad
+
+au! BufNewFile,BufRead,BufReadPost *.md source ~/.vim.local/on_markdown.vim
+au! BufNewFile,BufRead,BufReadPost *.hb source ~/.vim.local/on_handlebars.vim
+source ~/.vim.local/tag_bar.vim
+source ~/.vim.local/syntastic.vim
+source ~/.vim.local/window_boss.vim
+source ~/.vim.local/nerd_tree.vim
+source ~/.vim.local/coffee_settings.vim
+source ~/.vim.local/dash.vim
+source ~/.vim.local/fugitive.vim
