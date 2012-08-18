@@ -1,0 +1,2 @@
+setlocal spell
+set relativenumber
